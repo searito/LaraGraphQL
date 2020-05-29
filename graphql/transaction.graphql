@@ -1,0 +1,21 @@
+type Transaction {
+    id: ID!
+    amount: Float!
+    type: TransactionType!
+    description: String!
+    account: Account! @belongsTo
+    created_at: DateTime!
+    updated_at: DateTime!
+}
+
+input CreateTransactionInput{
+    account_id: ID!
+    amount: Float!
+    description: String!
+    type: TransactionType!
+}
+
+enum TransactionType{
+    INCOME
+    EXPENSE
+}
