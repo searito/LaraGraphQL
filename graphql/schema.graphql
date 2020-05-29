@@ -39,6 +39,10 @@ input CreateAccountInput{
     balance: Float! @rules(apply: ["gte:0"])
 }
 
+input UpdateAccountInput{
+    name: String!
+}
+
 
 extend type Mutation {
     createAccount(input: CreateAccountInput! @spread): Account
@@ -46,7 +50,17 @@ extend type Mutation {
         @inject(context: "user.id", name: "user_id")
         @guard(with: ["api"])
 
+    updateAccount(id: ID!, input: UpdateAccountInput! @spread): Account
+        @update
+        @can(ability: "update", find: "id")
+        @guard(with: ["api"])
+
     createTransaction(input: CreateTransactionInput! @spread): Transaction!
         @create
+        @guard(with: ["api"])
+
+    updateTransaction(id: ID!, input: UpdateTransactionInput @spread): Transaction
+        @update
+        @can(ability: "update", find: "id")
         @guard(with: ["api"])
 }

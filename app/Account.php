@@ -10,6 +10,10 @@ class Account extends Model
 {
     protected $fillable = ['user_id', 'name', 'balance'];
     protected $hidden = ['created_at', 'updated_at'];
+    protected $casts = [
+        'user_id'   =>  'Int',
+        'balance'   =>  'Float'
+    ];
 
     public function user(): BelongsTo
     {
