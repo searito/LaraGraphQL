@@ -4,43 +4,33 @@ namespace App\Observers;
 
 use App\Account;
 use App\Transaction;
+use App\Libraries\CalculateAccountBalance;
 
 class TransactionObserver
 {
+    public $calculator;
+
+    public function __construct(CalculateAccountBalance $calculator)
+    {
+        $this->calculator = $calculator;
+    }
+
     public function created(Transaction $transaction){
-        return $this->calculateNewAccountBalance($transaction);
+        return $this->calculator->calculateNewAccountBalance($transaction);
     }
 
     public function updating(Transaction $transaction){
-        request()->merge([
-            'old_transaction'    =>  Transaction::find($transaction->id)->toArray()
-        ]);
+        return $this->calculator->setOldTransaction(Transaction::find($transaction->id));
     }
 
     public function updated(Transaction $transaction){
-        $this->setAccountBalanceFromOldTransaction($transaction);
-        return $this->calculateNewAccountBalance($transaction);
+        $this->calculator->setAccountBalanceFromOldTransaction($transaction);
+        return $this->calculator->calculateNewAccountBalance($transaction);
     }
 
-    public function setAccountBalanceFromOldTransaction(Transaction $transaction): Account{
-        $account = $transaction->account;
-        $old_transaction = (object) request()->get('old_transaction');
-
-        if ($old_transaction->type === 'INCOME'){
-            $account->balance = $account->balance - $old_transaction->amount;
-            return $account;
-        }
-        $account->balance = $account->balance + $old_transaction->amount;
-        return $account;
-    }
-
-    public function calculateNewAccountBalance(Transaction $transaction){
-        $account = $transaction->account;
-        if ($transaction->type === 'INCOME'){
-            $account->balance = $account->balance + $transaction->amount;
-            return $account->save();
-        }
-        $account->balance = $account->balance - $transaction->amount;
+    public function deleted(Transaction $transaction){
+        $this->calculator->setOldTransaction($transaction);
+        $account = $this->calculator->setAccountBalanceFromOldTransaction($transaction);
         return $account->save();
     }
 }

@@ -63,4 +63,9 @@ extend type Mutation {
         @update
         @can(ability: "update", find: "id")
         @guard(with: ["api"])
+
+    deleteTransaction(id: ID!): Transaction!
+        @delete
+        @can(ability: "delete", find: "id")
+        @guard(with: ["api"])
 }
