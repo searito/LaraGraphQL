@@ -20,6 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->string('type');
             $table->string('description');
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('account_id')
                 ->references('id')
                 ->on('accounts')
