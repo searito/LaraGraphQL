@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.11"
     },
     "dependencies": {
+        "@saeris/vue-spinners": "^1.0.8",
         "apollo-boost": "^0.4.9",
         "graphql": "^15.1.0",
         "vue": "^2.6.11",

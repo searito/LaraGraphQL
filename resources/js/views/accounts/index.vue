@@ -7,7 +7,11 @@
             </button>
         </div>
 
-        <SimpleTable :headings="headings" :data="accounts" />
+        <SimpleTable :headings="headings"
+                     :data="accounts"
+                     :loading="loading"
+                     @editRecord="edit"
+        />
     </div>
 </template>
 
@@ -24,6 +28,7 @@
                     'Saldo',
                 ],
                 accounts: [],
+                loading: true,
             }
         },
         name: "index",
@@ -49,9 +54,13 @@
                         'balance': item.balance,
                     };
                 });
+                this.loading = false;
             },
             goToCreate(){
                 this.$router.push('/accounts/create');
+            },
+            edit(record){
+                this.$router.push(`/accounts/${record.id}/edit`);
             },
         }
     }

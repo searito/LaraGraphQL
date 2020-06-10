@@ -31,7 +31,9 @@
         </div>
 
         <div class="mb-4 pl-4">
-            <button class="button-primary" @click="submit">
+            <Loading :loading="loading"/>
+
+            <button v-if="!loading" class="button-primary" @click="submit">
                 Crear
             </button>
         </div>
@@ -43,6 +45,7 @@
 
 <script>
     import CrearCuenta from './../../graphql/accounts/createAccount.graphql';
+    import Loading from './../../components/common/loading';
 
     export default {
         name: "create",
@@ -53,11 +56,16 @@
                     balance: 0,
                 },
                 errors: null,
+                loading: false,
             }
+        },
+        components: {
+            Loading,
         },
         methods:{
             async submit(){
                 this.errors = null;
+                this.loading = true;
                 try{
                     const response = await this.$apollo.mutate({
                         mutation: CrearCuenta,
@@ -69,11 +77,13 @@
                         }
                     });
 
+                    this.loading = false;
                     if (response.data){
                         return this.$router.push('/accounts');
                     }
                 }catch(error){
                     this.errors = error;
+                    this.loading = false;
                 }
             },
         }
