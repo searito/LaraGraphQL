@@ -9,7 +9,12 @@ type Account {
 }
 
 input CreateAccountInput{
-    name: String!
+    name: String @rules(
+        apply: ["required"],
+        messages: {
+            required: "Nombre de cuenta requerido"
+        }
+    )
     balance: Float! @rules(apply: ["gte:0"])
 }
 

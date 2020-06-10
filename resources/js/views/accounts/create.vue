@@ -35,6 +35,9 @@
                 Crear
             </button>
         </div>
+
+
+        <ErrorToast v-if="this.errors" :errors="this.errors"/>
     </div>
 </template>
 
@@ -48,23 +51,29 @@
                 form: {
                     name: null,
                     balance: 0,
-                }
+                },
+                errors: null,
             }
         },
         methods:{
             async submit(){
-                const response = await this.$apollo.mutate({
-                    mutation: CrearCuenta,
-                    variables: {
-                        input: {
-                            name: this.form.name,
-                            balance: this.form.balance
+                this.errors = null;
+                try{
+                    const response = await this.$apollo.mutate({
+                        mutation: CrearCuenta,
+                        variables: {
+                            input: {
+                                name: this.form.name,
+                                balance: this.form.balance
+                            }
                         }
+                    });
+
+                    if (response.data){
+                        return this.$router.push('/accounts');
                     }
-                });
-                
-                if (response.data){
-                    return this.$router.push('/accounts');
+                }catch(error){
+                    this.errors = error;
                 }
             },
         }
