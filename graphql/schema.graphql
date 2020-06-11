@@ -36,6 +36,11 @@ type Mutation {
         @can(ability: "update", find: "id")
         @guard(with: ["api", "web"])
 
+    deleteAccount(id: ID!): Account!
+        @delete
+        @can(ability: "delete", find: "id")
+        @guard(with: ["api", "web"])
+
     createTransaction(input: CreateTransactionInput! @spread): Transaction!
         @create
         @guard(with: ["api", "web"])

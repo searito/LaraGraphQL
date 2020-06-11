@@ -186,4 +186,28 @@ class AccountMutationsTest extends TestCase
             'id'        =>  $account->id
         ]);
     }
+
+    function test_it_can_delete_an_account(){
+        $user = factory(User::class)->create();
+        $account = factory(Account::class)->create([
+            'name'      =>  'Billetera',
+            'user_id'   =>  $user->id,
+            'balance'   =>  400
+        ]);
+        Passport::actingAs($user);
+        $response = $this->graphQL('mutation {
+            deleteAccount(id: '.$account->id.'){
+                id
+            }
+        }');
+        $response->assertJson([
+            'data'  =>  [
+                'deleteAccount' =>  [
+                    'id'    =>  $account->id
+                ]
+            ]
+        ]);
+        $deleteAccount = $account->fresh();
+        $this->assertNotNull($deleteAccount->deleted_at);
+    }
 }

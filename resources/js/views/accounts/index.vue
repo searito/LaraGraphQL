@@ -11,6 +11,7 @@
                      :data="accounts"
                      :loading="loading"
                      @editRecord="edit"
+                     @deleteRecord="deleting"
         />
     </div>
 </template>
@@ -18,6 +19,9 @@
 <script>
     import SimpleTable from './../../components/tables/simple-table';
     import Accounts from './../../graphql/accounts/accounts.graphql';
+    import BorrarCuenta from './../../graphql/accounts/delete.graphql';
+    import Swal from 'sweetalert2/dist/sweetalert2.js'
+    import 'sweetalert2/src/sweetalert2.scss'
 
     export default {
         data(){
@@ -62,6 +66,30 @@
             edit(record){
                 this.$router.push(`/accounts/${record.id}/edit`);
             },
+            deleting(record){
+                Swal.fire({
+                    title: 'Estas Seguro?',
+                    text: `Quieres eliminar la cuenta ${record.name}, una vez hecho no hay marcha atrás`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Si'
+                }).then((result) => {
+                    if (result.value) {
+                        this.loading = true;
+                        return this.$apollo.mutate({
+                            mutation: BorrarCuenta,
+                            variables: {
+                                id: record.id
+                            }
+                        });
+                        this.getAccounts();
+                    }
+                }).then(response => {
+                    this.getAccounts();
+                })
+            }
         }
     }
 </script>

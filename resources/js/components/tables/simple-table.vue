@@ -12,7 +12,7 @@
                     <td class="p-2 border border-gray-400" v-for="row in item">{{ row }}</td>
                     <td class="p-2 border border-gray-400 w-1/4 text-center">
                         <button class="button-primary" @click="editRecord(item)">Editar</button>
-                        <button class="button-danger">Borrar</button>
+                        <button class="button-danger" @click="deleteRecord(item)">Borrar</button>
                     </td>
                 </tr>
 
@@ -44,6 +44,10 @@
             editRecord(record){
                 this.$emit('editRecord', record);
             },
+
+            deleteRecord(record){
+                this.$emit('deleteRecord', record);
+            }
         }
     }
 </script>

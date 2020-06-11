@@ -10,4 +10,12 @@ const apolloClient = new ApolloClient({
     onError: ErrorHandler
 });
 
+apolloClient.defaultOptions = {
+    watchQuery: {
+        fetchPolicy: 'network-only',
+    },
+    query: {
+        fetchPolicy: 'network-only',
+    },
+};
 export default apolloClient;
