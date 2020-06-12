@@ -2,6 +2,7 @@
 #import account.graphql
 #import transaction.graphql
 #import category.graphql
+#import exchange-rates.graphql
 "A date string with format `Y-m-d`, e.g. `2011-05-23`."
 scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 
@@ -23,6 +24,7 @@ type Query {
     transaction(id: ID! @eq): Transaction! @find @can(ability: "view", find: "id") @guard(with: ["api", "web"])
     categories: [Category!] @paginate(scopes: ["byLoggedInUser"]) @guard(with: ["api", "web"])
     category(id: ID! @eq): Category! @find @can(ability: "view", find: "id") @guard(with: ["api", "web"])
+    exchangeConversion(input: ExchangeConversionInput! @spread): ExchangeConversion
 }
 
 type Mutation {
