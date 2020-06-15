@@ -58,6 +58,21 @@
             </label>
         </div>
 
+        <div class="mb-4">
+            <label for="" class="block text-gray-700 text-sm font-bold mb-2 w-full pr-4 pl-4">
+                Descripción
+
+                <textarea name="descripcion"
+                          id="descripcion"
+                          cols="30"
+                          rows="2"
+                          v-model="form.description"
+                          class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                          style="margin-top: 1em"
+                />
+            </label>
+        </div>
+
         <div class="mb-4 pl-4">
             <Loading :loading="loading"/>
 
@@ -66,13 +81,13 @@
             </button>
         </div>
 
-
         <ErrorToast v-if="this.errors" :errors="this.errors"/>
     </div>
 </template>
 
 <script>
     import AccountsCategories from './../../graphql/transactions/create-transaction-data.graphql';
+    import CrearTransaccion from './../../graphql/transactions/create-transaction.graphql';
     import Loading from './../../components/common/loading';
 
     export default {
@@ -84,11 +99,10 @@
                 loading: true,
                 form:{
                     account_id: 0,
-                    account_name: null,
                     category_id: 0,
-                    category_name: null,
                     type: null,
                     amount: 0,
+                    description: null,
                 },
                 types: [
                     {
@@ -106,10 +120,10 @@
         components: {
             Loading,
         },
-        created() {
+        created(){
             this.getData();
         },
-        methods: {
+        methods:{
             async getData(){
                 const response = await this.$apollo.query({
                     query: AccountsCategories
@@ -129,7 +143,26 @@
                 });
                 this.loading = false;
             },
-            submit(){},
+            async submit(){
+                this.errors = null;
+                this.loading = true;
+                try{
+                    const response = await this.$apollo.mutate({
+                        mutation: CrearTransaccion,
+                        variables: {
+                            input: this.form
+                        }
+                    });
+
+                    this.loading = false;
+                    if (response.data){
+                        return this.$router.push('/transactions');
+                    }
+                }catch(error){
+                    this.errors = error;
+                    this.loading = false;
+                }
+            },
         }
     }
 </script>

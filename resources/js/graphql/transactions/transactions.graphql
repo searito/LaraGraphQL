@@ -1,0 +1,17 @@
+query transactions($first: Int!, $page: Int) {
+    transactions(first: $first, page: $page){
+        data{
+            id
+            amount
+            type
+            description
+            account{
+                name
+                balance
+            }
+            category{
+                name
+            }
+        }
+    }
+}
